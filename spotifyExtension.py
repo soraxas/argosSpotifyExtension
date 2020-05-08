@@ -26,6 +26,9 @@ def kill_spotify():
         if proc.name() == "spotify":
             proc.kill()
 
+# double escape is 1. for bash's inline string command and 2. python's inline string command
+kill_spotify_inline = """import psutil; [p.kill() for p in psutil.process_iter() if p.name() == \\"spotify\\"]"""
+
 # Shorten strings longer than maxDisplayLength to maxDisplayLength and add ... after
 def maybe_shorten(string):
     if(len(string) > maxDisplayLength):
@@ -83,13 +86,13 @@ def main():
             print("Previous | iconName=media-skip-backward bash='dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous' terminal=false")
         
             # exit spotify
-            print('''Exit Spotify | iconName=application-exit bash='cd ~/git/argosSpotifyExtension && python3 -c "from spotifyExtension import kill_spotify; kill_spotify()"' terminal=true''')
+            print('''Exit Spotify | iconName=application-exit bash='python3 -c "{}"' terminal=false'''.format(kill_spotify_inline))
         
         else:
             print("Nothing is playing | iconName=spotify")
             print("---")
             print("Start playing music! | iconName=media-playback-start bash='dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.OpenUri string:" + startUri + "' terminal=false")
-            print('''Exit Spotify | iconName=application-exit bash='cd ~/git/argosSpotifyExtension && python3 -c "from spotifyExtension import kill_spotify; kill_spotify()"' terminal=true''')
+            print('''Exit Spotify | iconName=application-exit bash='python3 -c "{}"' terminal=false'''.format(kill_spotify_inline))
      
     else:
         print("Spotify is not running | iconName=spotify")
